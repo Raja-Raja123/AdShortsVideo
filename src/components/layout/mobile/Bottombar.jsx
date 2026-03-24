@@ -24,7 +24,6 @@ const BottomBar = () => {
 
   const items = [
     { icon: Home, label: "Home" },
-    { icon: Search, label: "Search" },
     { icon: Film, label: "ADs" },
     { icon: PlusSquare, label: "upload ADs" },
     { icon: Heart, label: "Notifications" },
