@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "@/api/axios";
 
 export default function useFeed(){
 
@@ -12,7 +13,7 @@ const fetchFeed = async()=>{
 
 try{
 
-const res = await axios.get("/api/feed");
+const res = await api.get("/feed");
 
 setVideos(res.data.data);   // IMPORTANT
 

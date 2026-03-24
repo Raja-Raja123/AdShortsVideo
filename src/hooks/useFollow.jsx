@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { FollowContext } from "../context/FollowContext";
 import axios from "axios";
+import api from "@/api/axios";
 
 export default function useFollow() {
   const { followMap, toggleFollowState, setInitialFollowState } =
@@ -16,7 +17,7 @@ export default function useFollow() {
       const auth = JSON.parse(localStorage.getItem("auth"));
       const token = auth?.token;
 
-      const { data } = await axios.get(`/api/user/${userId}`, {
+      const { data } = await api.get(`/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

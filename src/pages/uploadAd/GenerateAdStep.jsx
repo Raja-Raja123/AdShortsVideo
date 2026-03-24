@@ -5,6 +5,7 @@ import DurationSelector from "./DurationSelector";
 import GenerateButton from "./GenerateButton";
 import ProgressLoader from "./ProgressLoader";
 import VideoPreview from "./VideoPreview";
+import api from "@/api/axios";
 
 export default function GenerateAdStep({ product, media, prevStep }) {
 
@@ -50,8 +51,8 @@ if(media.audio){
 }
 
 const token =JSON.parse( localStorage.getItem("auth")).token;
-const res = await axios.post(
-`https://kaylee-biangular-devotedly.ngrok-free.dev/render/${theme}`,
+const res = await api.post(
+`/render/${theme}`,
 formData,
 {
 headers:{

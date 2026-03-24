@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Heart } from "lucide-react";
+import api from "@/api/axios";
 
 export default function LikeButton({ videoId, initialLikes }) {
   const [liked, setLiked] = useState(false);
@@ -16,14 +17,15 @@ export default function LikeButton({ videoId, initialLikes }) {
 
       const token = JSON.parse(localStorage.getItem("auth"))?.token;
 
-      const res = await fetch(`/api/videos/${videoId}/like`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const { data } = await api.post(
+        `/videos/${videoId}/like`,
+        {}, // no body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
-
-      const data = await res.json();
+      );
 
       if (data.liked) {
         setLiked(true);
@@ -51,9 +53,7 @@ export default function LikeButton({ videoId, initialLikes }) {
         }`}
       />
 
-      <p className="text-sm font-semibold mt-2">
-        {likesCount} likes
-      </p>
+      <p className="text-sm font-semibold mt-2">{likesCount} likes</p>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import api from "@/api/axios";
 
 const useMyVideos = () => {
 
@@ -17,7 +18,7 @@ const useMyVideos = () => {
 
      try{
           
-        const res = await axios.get("/api/my-videos",{
+        const res = await api.get("/my-videos",{
           headers:{
             Authorization:`Bearer ${token}`
           }

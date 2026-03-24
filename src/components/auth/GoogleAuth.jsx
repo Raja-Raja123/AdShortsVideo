@@ -3,6 +3,7 @@ import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import api from "@/api/axios";
 
 const GoogleAuthHandler = ({ onClose }) => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const GoogleAuthHandler = ({ onClose }) => {
           throw new Error("Missing Google access_token.");
         }
 
-        const res = await axios.post(
+        const res = await api.post(
           "/api/auth/google",
           { access_token: accessToken },
           { headers: { "Content-Type": "application/json" } },

@@ -1,3 +1,4 @@
+import api from "@/api/axios";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
 import { FaFacebook } from "react-icons/fa";
@@ -44,7 +45,7 @@ const FacebookAuth = ({onClose}) => {
           window.FB.api(
             "/me",
             { fields: "name,email,picture" },
-            function (userData) {
+            async function (userData) {
               console.log("User Data:", userData);
 
               // access token
@@ -61,40 +62,42 @@ const FacebookAuth = ({onClose}) => {
       .find((row) => row.startsWith("XSRF-TOKEN="))
       ?.split("=")[1];
 
-  fetch("/api/auth/facebook/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      "X-XSRF-TOKEN": decodeURIComponent(token),
-    },
-    body: JSON.stringify({
+  try {
+  const { data } = await api.post(
+    "/auth/facebook/login",
+    {
       access_token: accessToken,
       userData: userData,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Backend response:", data);
-      if (data.token) {
-        localStorage.setItem(
-          "auth",
-          JSON.stringify({
-            token: data.token,
-            user: data.user
-          })
-        );
-        setAuthUser(data.user);
-        alert("Login successful");
-        navigate("/");
-        onClose?.();
-      } else {
-        alert("Login failed: " + (data.message || "Unknown error"));
-      }
-    })
-    .catch((error) => {
-      console.error("Error sending data to backend:", error);
-    });
+    },
+    {
+      headers: {
+        Accept: "application/json",
+        "X-XSRF-TOKEN": decodeURIComponent(token),
+      },
+    }
+  );
+
+  console.log("Backend response:", data);
+
+  if (data.token) {
+    localStorage.setItem(
+      "auth",
+      JSON.stringify({
+        token: data.token,
+        user: data.user,
+      })
+    );
+
+    setAuthUser(data.user);
+    alert("Login successful");
+    navigate("/");
+    onClose?.();
+  } else {
+    alert("Login failed: " + (data.message || "Unknown error"));
+  }
+} catch (error) {
+  console.error("Error sending data to backend:", error.response?.data || error.message);
+}
 },
           );
         } else {
