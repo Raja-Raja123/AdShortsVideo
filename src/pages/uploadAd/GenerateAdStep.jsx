@@ -51,8 +51,8 @@ if(media.audio){
 }
 
 const token =JSON.parse( localStorage.getItem("auth")).token;
-const res = await api.post(
-`/render/${theme}`,
+const res = await axios.post(
+`https://kaylee-biangular-devotedly.ngrok-free.dev/render/${theme}`,
 formData,
 {
 headers:{
