@@ -20,7 +20,7 @@ const GoogleAuthHandler = ({ onClose }) => {
         }
 
         const res = await api.post(
-          "/api/auth/google",
+          "/auth/google",
           { access_token: accessToken },
           { headers: { "Content-Type": "application/json" } },
         );
