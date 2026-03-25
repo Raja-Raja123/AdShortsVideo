@@ -16,7 +16,6 @@ export default function useFollow() {
 
       const auth = JSON.parse(localStorage.getItem("auth"));
       const token = auth?.token;
-      console.log(token)
       const { data } = await api.get(`/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -42,7 +41,7 @@ export default function useFollow() {
       const token = auth?.token;
 
       const { data } = await api.post(
-        `/api/follow/${userId}`,
+        `/follow/${userId}`,
         {},
         {
           headers: {
