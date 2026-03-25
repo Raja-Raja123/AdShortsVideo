@@ -3,7 +3,7 @@ import { Search } from "lucide-react"; // optional icon
 
 const TopBar = () => {
   return (
-    <div className="fixed top-0 left-0 w-full h-12 flex  items-center gap-4 px-3 border-b bg-background z-50">
+    <div className="fixed top-0 left-0 w-full h-15 flex  items-center gap-4 p-5 border-b bg-background z-50">
       
       {/* Logo */}
       <img
