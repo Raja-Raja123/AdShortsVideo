@@ -81,7 +81,7 @@ setLoading(false);
 
 return(
 
-<div className=" sm:space-y-6">
+<div className="sm:max-w-5xl">
 
 {/* ---------- SHOW LOADER ---------- */}
 
@@ -97,12 +97,12 @@ return(
 
 {!loading && !video && (
 
-<>
+<div className="space-y-6 p-6">
 <ThemeSelector selected={theme} setTheme={setTheme}/>
 
 <DurationSelector duration={duration} setDuration={setDuration}/>
 
-<div className="flex justify-between">
+<div className="flex justify-between w-[90%] md:w-full">
 
 <button
 onClick={prevStep}
@@ -122,7 +122,7 @@ disabled={!theme || !duration}
 <p className="text-red-500">{error}</p>
 )}
 
-</>
+</div>
 
 )}
 

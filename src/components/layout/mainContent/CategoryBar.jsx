@@ -22,12 +22,12 @@ const CategoryBar = () => {
   return (
     <div
       className="
-        fixed top-18
+        fixed top-15
         md:top-0 
         left-0 md:left-20 
         right-0 
-        bg-background z-10
-        
+        bg-background z-50
+        p-2
       "
     >
       {/* Scroll Container */}

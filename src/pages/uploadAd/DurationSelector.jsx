@@ -2,7 +2,7 @@ export default function DurationSelector({duration,setDuration}){
 
   return (
 
-    <div className="space-y-2 mt-12 mb-12">
+    <div className="space-y-2 mt-12 mb-12 w-[90%] md:w-full">
 
        <h2 className="text-lg sm:text-xl font-semibold">
         Select Duration
@@ -15,7 +15,7 @@ export default function DurationSelector({duration,setDuration}){
     bg-background
     text-foreground
     border
-    border-border
+    border-blue-400
     rounded-md
     px-3
     py-2

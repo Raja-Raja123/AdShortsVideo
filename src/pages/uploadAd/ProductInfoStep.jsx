@@ -62,7 +62,7 @@ export default function ProductInfoStep({ setProduct, nextStep }) {
 
   return(
 
-  <div className="space-y-6 p-2 w-lg">
+  <div className="space-y-6 p-4  max-[540px]:mx-6">
 
     <h2 className="text-xl font-semibold">
       Basic Product Information

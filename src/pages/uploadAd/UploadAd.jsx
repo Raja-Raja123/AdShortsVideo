@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import StepIndicator from "./StepIndicator";
+
 import ProductInfoStep from "./ProductInfoStep";
 import MediaUploadStep from "./MediaUploadStep";
 import GenerateAdStep from "./GenerateAdStep";
@@ -14,9 +14,8 @@ const [media,setMedia] = useState({});
 
 return(
 
-<div className=" mx-auto p-4 space-y-6">
+<div className="w-full min-[875px]:w-2xl p-2 mb-25">
 
-{/* <StepIndicator step={step}/> */}
 
 {step===1 &&
 <ProductInfoStep

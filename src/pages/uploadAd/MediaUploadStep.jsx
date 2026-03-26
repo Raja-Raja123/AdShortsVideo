@@ -4,7 +4,7 @@ export default function MediaUploadStep({setMedia,nextStep,prevStep}){
 
 return(
 
-<div className="space-y-6 space-x-4">
+<div className="space-y-6 space-x-4 p-4">
 
 <h2 className="text-xl font-semibold">Upload Media</h2>
 
