@@ -57,7 +57,7 @@ const seconds = timeLeft % 60;
 
 return (
 
-<div className="flex justify-center mt-8 px-8">
+<div className="flex justify-center mt-8 md:mt-4 sm:px-8 -mr-4">
 
 <div className="bg-zinc-600 border border-zinc-500 rounded-xl p-6 shadow-xl w-sm">
 
