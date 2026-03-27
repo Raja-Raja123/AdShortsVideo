@@ -1,8 +1,14 @@
 import { useEffect } from "react";
 import useFollow from "@/hooks/useFollow";
+import { useAuth } from "@/context/AuthContext";
 
 export default function FollowButton({ userId }) {
-  const { followMap, handleFollow, fetchFollowStatus } = useFollow();
+  const { followMap, handleFollow, fetchFollowStatus,loadingMap } = useFollow();
+  const { user } = useAuth();
+  const isLoading = loadingMap[userId];
+  if (user?.id === userId) {
+    return null;
+  }
 
   // ✅ fetch on first render
   useEffect(() => {
@@ -15,6 +21,7 @@ export default function FollowButton({ userId }) {
 
   return (
     <button
+      disabled={isLoading}
       onClick={() => handleFollow(userId)}
       className={`text-sm font-semibold cursor-pointer ${
         isFollowed === undefined

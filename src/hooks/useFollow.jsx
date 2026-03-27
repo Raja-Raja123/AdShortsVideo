@@ -1,41 +1,43 @@
 import { useContext, useState } from "react";
 import { FollowContext } from "../context/FollowContext";
-import axios from "axios";
 import api from "@/api/axios";
 
 export default function useFollow() {
   const { followMap, toggleFollowState, setInitialFollowState } =
     useContext(FollowContext);
 
-  const [loading, setLoading] = useState(false);
+  // ✅ loading per user (instead of global)
+  const [loadingMap, setLoadingMap] = useState({});
 
-  // ✅ FETCH FOLLOW STATUS
+  // ✅ FETCH FOLLOW STATUS (fixed logic)
   const fetchFollowStatus = async (userId) => {
     try {
+      // ✅ prevent duplicate calls but allow fresh fetch after reload
       if (followMap[userId] !== undefined) return;
 
       const auth = JSON.parse(localStorage.getItem("auth"));
       const token = auth?.token;
+
       const { data } = await api.get(`/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // ✅ set initial state
-      setInitialFollowState(userId, data.is_following);
-
+      // ✅ always sync with backend
+      setInitialFollowState(userId, data.user.is_following);
     } catch (err) {
       console.error("Fetch Follow Status Error:", err);
     }
   };
 
-  // ✅ TOGGLE FOLLOW
+  // ✅ TOGGLE FOLLOW (better UX + safe state handling)
   const handleFollow = async (userId) => {
-    if (loading) return;
+    // prevent double click per user
+    if (loadingMap[userId]) return;
 
     try {
-      setLoading(true);
+      setLoadingMap((prev) => ({ ...prev, [userId]: true }));
 
       const auth = JSON.parse(localStorage.getItem("auth"));
       const token = auth?.token;
@@ -54,11 +56,10 @@ export default function useFollow() {
       toggleFollowState(userId, data.followed);
 
       return data.followed;
-
     } catch (err) {
       console.error("Follow Error:", err);
     } finally {
-      setLoading(false);
+      setLoadingMap((prev) => ({ ...prev, [userId]: false }));
     }
   };
 
@@ -66,6 +67,6 @@ export default function useFollow() {
     followMap,
     handleFollow,
     fetchFollowStatus,
-    loading,
+    loadingMap, // ✅ expose per-user loading
   };
 }

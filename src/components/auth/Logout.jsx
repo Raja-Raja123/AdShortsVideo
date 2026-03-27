@@ -8,8 +8,14 @@ export default function Logout() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+   const confirmLogout = window.confirm("Are you sure you want to logout?");
+
+  if (confirmLogout) {
     logout();
     navigate("/"); // redirect after logout
+  } else {
+    return; // do nothing if user cancels
+  }
   };
 
   return (

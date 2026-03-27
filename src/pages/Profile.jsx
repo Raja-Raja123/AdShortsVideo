@@ -3,13 +3,13 @@ import Logout from "@/components/auth/Logout";
 import { useAuth } from "../context/AuthContext";
 import useMyVideos from "../hooks/useMyVideo";
 import useVideoPlayer from "@/hooks/useVideoPlayer";
+import api from "@/api/axios";
 
 export default function Profile() {
   const { user } = useAuth();
   const { videos, loading } = useMyVideos();
   const { handlePlay, setRef } = useVideoPlayer();
 
-  // ✅ NEW STATE
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
 
@@ -20,27 +20,20 @@ export default function Profile() {
       })
     : "Recently";
 
-  // ✅ FETCH PROFILE DATA
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const auth = JSON.parse(localStorage.getItem("auth"));
-        const token = auth?.token;
+        const token = JSON.parse(localStorage.getItem("auth"))?.token;
 
-        const res = await fetch(`/api/user/profile`, {
+        const res = await api.get(`/user/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        if (!res.ok) throw new Error("Failed to fetch profile");
-
-        const data = await res.json();
-        // console.log("PROFILE DATA:", data.data.followers_count);
-
-        // ✅ SET COUNTS
-        setFollowers(data.data.followers_count);
-        setFollowing(data.data.following_count);
+        const data = res.data.data;
+        setFollowers(data.followers_count);
+        setFollowing(data.following_count);
       } catch (err) {
         console.error(err);
       }
@@ -50,72 +43,78 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="fixed top-0 w-[85%] items-center sm:px-6 lg:px-2 py-4">
-      {/* PROFILE CARD */}
-      <div className="rounded-2xl sm:p-8 mb-10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          {/* LEFT */}
-          <div className="flex items-center gap-6">
-            <img
-              src={user?.avatar || "/default-avatar.png"}
-              referrerPolicy="no-referrer"
-              className="sm:w-18 sm:h-18 rounded-full object-cover border"
-            />
+    <div className="w-full sm:w-[80%]  px-10 py-6 mb-28">
+      
+      {/* PROFILE HEADER */}
+      <div className="w-full flex items-center justify-between mb-6">
+        
+        {/* LEFT SIDE */}
+        <div className="flex items-center gap-4 min-w-0">
+          <img
+            src={user?.avatar || "/default-avatar.png"}
+            referrerPolicy="no-referrer"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border"
+          />
 
-            <div>
-              <h2 className="text-xl sm:text-2xl font-semibold">
-                {user?.name || user?.email?.split("@")[0]}
-              </h2>
+          <div className="min-w-0">
+            <h2 className="text-lg sm:text-xl font-semibold truncate">
+              {user?.name || user?.email?.split("@")[0]}
+            </h2>
 
-              <p className="text-sm text-muted-foreground mt-1">
-                Member since {joinDate}
-              </p>
-            </div>
-          </div>
-
-          {/* LOGOUT */}
-          <div className="self-start mr-18 sm:self-auto">
-            <Logout />
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Member since {joinDate}
+            </p>
           </div>
         </div>
 
-        {/* 🔥 PROFILE STATS */}
-        <div className="flex justify-around sm:justify-start sm:gap-12 mt-8 ml-8 text-center">
-          <div>
-            <p className="text-lg sm:text-xl font-semibold">{videos.length}</p>
-            <p className="text-sm text-muted-foreground">Ads</p>
-          </div>
+        {/* RIGHT SIDE */}
+        <div>
+          <Logout />
+        </div>
+      </div>
 
-          <div>
-            <p className="text-lg sm:text-xl font-semibold">{followers ?? 0}</p>
+      {/* STATS */}
+      <div className="flex justify-around sm:justify-start sm:gap-12 mb-8 text-center">
+        <div>
+          <p className="text-lg sm:text-xl font-semibold">{videos.length}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Ads</p>
+        </div>
 
-            <p className="text-sm text-muted-foreground">Followers</p>
-          </div>
+        <div>
+          <p className="text-lg sm:text-xl font-semibold">{followers}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Followers
+          </p>
+        </div>
 
-          <div>
-            <p className="text-lg sm:text-xl font-semibold">{following ?? 0}</p>
-            <p className="text-sm text-muted-foreground">Following</p>
-          </div>
+        <div>
+          <p className="text-lg sm:text-xl font-semibold">{following}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Following
+          </p>
         </div>
       </div>
 
       {/* VIDEO SECTION */}
-      <h3 className="text-lg font-semibold mb-6">Your Ad Videos</h3>
+      <h3 className="text-base sm:text-lg font-semibold mb-4">
+        Your Ad Videos
+      </h3>
 
       {loading && <p>Loading...</p>}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 mr-10">
+      {/* 🔥 SQUARE GRID */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {videos.map((video) => (
           <div
             key={video.id}
-            className="rounded-xl overflow-hidden border hover:scale-[1.02] transition m-2"
+            className="w-full aspect-square rounded-xl overflow-hidden border hover:scale-[1.02] transition"
           >
             <video
               ref={(el) => setRef(video.id, el)}
               src={video.video_url}
               controls
               onPlay={() => handlePlay(video.id)}
-              className="w-full h-56 object-cover"
+              className="w-full h-full object-cover"
             />
           </div>
         ))}

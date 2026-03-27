@@ -1,59 +1,40 @@
-// components/LikeButton.jsx
-
-import { useState } from "react";
+import { useEffect } from "react";
 import { Heart } from "lucide-react";
-import api from "@/api/axios";
+import useLike from "@/hooks/useLike";
 
-export default function LikeButton({ videoId, initialLikes }) {
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(initialLikes || 0);
-  const [loading, setLoading] = useState(false);
+export default function LikeButton({ videoId }) {
+  const { likeMap, fetchLikeStatus, handleLike, loadingMap } = useLike();
 
-  const handleLike = async () => {
-    if (loading) return;
-
-    try {
-      setLoading(true);
-
-      const token = JSON.parse(localStorage.getItem("auth"))?.token;
-
-      const { data } = await api.post(
-        `/videos/${videoId}/like`,
-        {}, // no body
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (data.liked) {
-        setLiked(true);
-        setLikesCount((prev) => prev + 1);
-      } else {
-        setLiked(false);
-        setLikesCount((prev) => prev - 1);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+  // ✅ fetch like status on mount
+  useEffect(() => {
+    if (videoId) {
+      fetchLikeStatus(videoId);
     }
-  };
+  }, [videoId]);
+
+  const likeData = likeMap[videoId];
+  const isLoading = loadingMap[videoId];
+
+  // ✅ loading state (before API response)
+  if (!likeData) {
+    return <p className="text-sm text-gray-400">...</p>;
+  }
 
   return (
     <div>
       <Heart
         size={24}
-        onClick={handleLike}
+        onClick={() => handleLike(videoId)}
         className={`cursor-pointer transition ${
-          liked
+          likeData.liked
             ? "text-red-500 fill-red-500 scale-110"
             : "text-gray-600 hover:text-red-500"
-        }`}
+        } ${isLoading ? "opacity-50 pointer-events-none" : ""}`}
       />
 
-      <p className="text-sm font-semibold mt-2">{likesCount} likes</p>
+      <p className="text-sm font-semibold mt-2">
+        {likeData.count} likes
+      </p>
     </div>
   );
 }
